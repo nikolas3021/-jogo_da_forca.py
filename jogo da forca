@@ -1,23 +1,43 @@
+# Jogo da Forca
 palavra_secreta = "girafa"
-letras_acertadas = ["_", "_", "_", "_", "_", "_"]
+letras_acertadas = ["_"] * len(palavra_secreta)
 tentativas = 6
+partes_boneco = ["Cabeça", "Tronco", "Braço esquerdo", "Braço direito", "Perna esquerda", "Perna direita"]
+erros = 0
+
+def desenhar_forca(erros):
+    desenho = [
+        " +---+",
+        " |   |",
+        " {}   |".format("O" if erros > 0 else " "),
+        "{}{}  |".format("/" if erros > 2 else " ", "\\" if erros > 3 else " "),
+        "{}{}  |".format("/" if erros > 4 else " ", "\\" if erros > 5 else " "),
+        "     |",
+        "====="
+    ]
+    print("\n".join(desenho))
 
 while tentativas > 0 and "_" in letras_acertadas:
+    desenhar_forca(erros)
+    print("Palavra:", " ".join(letras_acertadas))
+    print(f"Tentativas restantes: {tentativas}")
+
     palpite = input("Digite uma letra: ").lower()
 
     if palpite in palavra_secreta:
-        index = 0
-        for letra in palavra_secreta:
-            if palpite == letra:
+        for index, letra in enumerate(palavra_secreta):
+            if letra == palpite:
                 letras_acertadas[index] = letra
-            index += 1
     else:
-        tentativas -= 1
-        print(f"Você tem {tentativas} tentativas restantes.")
+        if palpite not in palavra_secreta:
+            erros += 1
+            tentativas -= 1
+            print(f"Você errou! Parte adicionada: {partes_boneco[erros-1]}")
     
-    print(" ".join(letras_acertadas))
+    print("\n")
 
 if "_" not in letras_acertadas:
-    print("Parabéns, você ganhou!")
+    print("Parabéns, você ganhou! A palavra era:", palavra_secreta)
 else:
+    desenhar_forca(erros)
     print("Que pena, você perdeu. A palavra era:", palavra_secreta)
